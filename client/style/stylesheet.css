@@ -1,0 +1,44 @@
+*{
+    box-sizing: border-box;
+    padding:0;
+    margin: 0;
+}
+
+html{
+    padding: 0;
+    margin: 0;
+    height: 100%;
+    width: 100%;
+}
+
+body{
+    padding: 5px;
+    margin: auto;
+    width: 100%;
+    max-width: 100vh;
+    min-height: 100%;
+    background-color: rgb(32,32,32);
+    color: rgb(232,232,232);
+}
+
+#map{
+    display: flex;
+    flex-wrap: wrap;
+    width: 50vh;
+    height: 50vh;
+    margin: auto;
+    border: 2px solid gray;
+    border-radius: 5px;
+}
+
+.cell{
+    margin: 1px;
+    border: 1px solid gray;
+    border-radius: 5px;
+    flex-shrink: 0;
+    flex-grow: 1;
+}
+
+.open{
+    background-color: rgb(64, 200, 72);
+}
