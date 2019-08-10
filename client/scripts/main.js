@@ -1,17 +1,46 @@
+/*
+Legend
+
+0 - Open
+1 - Blocked
+2 - Green Goal
+3 - Orange Goal
+4 - Dividing Line
+5 - Stone
+*/
+
+var legend = [
+    "open",
+    "blocked",
+    "orange-goal",
+    "green-goal",
+    "stone"
+]
+
+var map = [
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0,
+    0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0,
+    0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0,
+    0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0,
+    0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,
+    2, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 3,
+    2, 0, 1, 0, 1, 0, 1, 0, 4, 0, 1, 0, 1, 0, 1, 0, 3,
+    2, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 3,
+    0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0,
+    0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0,
+    0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0,
+    0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0,
+    0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+]
+
 $(function () {
-    var size = 17;
-    var cells = [,]
-
-    for (var y = 0; y < size; y++) {
-        for (var x = 0; x < size; x++) {
-            var type = "open";
-            if((x % 4 + y % 4 == 0) && (x != Math.floor(size / 2) && y != Math.floor(size / 2))){
-                type = "blocked";
-            }
-            cells[x, y] = type;
-
-            var flexBasis = 100 / size;
-            $('#map').append("<div id='r" + y + "c" + x + "' class='cell " + type + "' style='flex-basis:calc(" + flexBasis + "% - 2px);'></div>");
-        }
+    for (var c = 0; c < map.length; c++) {
+        var _class = legend[map[c]];
+        var flexBasis = 100 / Math.sqrt(map.length);
+        $('#map').append("<div id='" + c + "' class='cell " + _class + "' style='flex-basis:calc(" + flexBasis + "% - 2px);'></div>");
     }
 });

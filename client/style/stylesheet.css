@@ -37,8 +37,29 @@ body{
     border-radius: 5px;
     flex-shrink: 0;
     flex-grow: 1;
+    font-style: monospace;
+    font-size: small;
+    color:black;
 }
 
 .open{
+    background-color: rgb(176, 176, 176);
+}
+
+.blocked{
+    background-color: rgb(32,32,32);
+}
+
+.orange-goal{
+    background-color: rgb(200, 128, 32);
+}
+
+.green-goal{
     background-color: rgb(64, 200, 72);
+}
+
+.stone{
+    border-radius: 50%;
+    border: 2px solid rgb(200,200,200);
+    background-color: rgb(96, 94, 94);
 }
