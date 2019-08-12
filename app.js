@@ -8,8 +8,8 @@ var pushLog = [];
 var legend = [
     "open",
     "blocked",
-    "orange-goal",
-    "green-goal",
+    "orange",
+    "green",
     "stone"
 ]
 
@@ -120,7 +120,11 @@ io.on('connection', function (socket) {
             pushLog.push([ip, toId, time]);
         }
 
-        io.to(id).emit('push message', pushMessage);
+        var messageType = 'info';
+        if(!canPush){
+            messageType = 'warning';
+        }
+        io.to(id).emit('push message', pushMessage, messageType);
     });
 
     socket.on('disconnect', function () {

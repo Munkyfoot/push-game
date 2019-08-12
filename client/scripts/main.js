@@ -9,11 +9,11 @@ $(function () {
         }
     });
 
-    socket.on('push message', function (msg){
-        //alert(msg);
+    socket.on('push message', function (msg, type) {
+        $('#chat_output').prepend("<div class='message'><span class='name " + type + "'>!</span>" + msg + "</div>");
     });
 
-    $('#map').on('click', '.free-neighbor', function(){
+    $('#map').on('click', '.free-neighbor', function () {
         socket.emit('push', $(this).attr('id'));
     });
 });

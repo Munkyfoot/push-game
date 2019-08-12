@@ -41,32 +41,6 @@ input{
     margin: auto;
 }
 
-#chat{
-    flex-direction: column;
-    border-left: 1px solid rgb(96,96,96);
-    border-right: 1px solid rgb(96,96,96);
-}
-
-#chat_output{
-    flex-basis: calc(100% - 40px);
-    background-color: rgb(32,32,32);
-}
-
-#chat_input{
-    flex-grow: 1;
-    border-top: 1px solid gray;
-    background-color: rgb(48,48,48);
-    color: rgb(232,232,232);
-}
-
-#chat_send{
-    border-top: 1px solid gray;
-    border-left: 1px solid gray;
-    cursor: pointer;
-    background-color: rgb(32,32,32);
-    color: rgb(232,232,232);
-}
-
 #map{    
     flex-wrap: wrap;
     padding: 4px;
@@ -91,11 +65,11 @@ input{
     background-color: rgb(32,32,32);
 }
 
-.orange-goal{
+.orange{
     background-color: rgb(200, 128, 32);
 }
 
-.green-goal{
+.green{
     background-color: rgb(64, 200, 72);
 }
 
@@ -113,4 +87,51 @@ input{
 
 .free-neighbor:hover{
     background-color: rgb(232,232,232);
+}
+
+#chat{
+    flex-direction: column;
+    border-left: 1px solid rgb(96,96,96);
+    border-right: 1px solid rgb(96,96,96);
+}
+
+#chat_output{
+    flex-basis: calc(100% - 40px);
+    background-color: rgb(32,32,32);
+    overflow: hidden;
+    padding: 5px;
+}
+
+#chat_input{
+    flex-grow: 1;
+    border-top: 1px solid gray;
+    background-color: rgb(48,48,48);
+    color: rgb(232,232,232);
+}
+
+#chat_send{
+    border-top: 1px solid gray;
+    border-left: 1px solid gray;
+    cursor: pointer;
+    background-color: rgb(32,32,32);
+    color: rgb(232,232,232);
+}
+
+.message{
+    margin-bottom: 5px;
+}
+
+.name{
+    display: inline-block;
+    padding: 5px;
+    margin-right: 5px;
+    border-radius: 5px;
+}
+
+.info{
+    background-color: rgb(88, 100, 232);
+}
+
+.warning{
+    background-color: rgb(255, 96, 64);
 }
