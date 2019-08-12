@@ -3,7 +3,7 @@ var http = require('http').createServer(app);
 var io = require('socket.io')(http);
 
 var chatLog = [];
-var pushLog = [];
+var pushLog = {};
 
 var legend = [
     "open",
@@ -95,17 +95,12 @@ io.on('connection', function (socket) {
             pushMessage = "Invalid destination. Refresh page if issue persists.";
         }
         else {
-            for (var i = 0; i < pushLog.length; i++) {
-                _ip = pushLog[i][0];
-                _toId = pushLog[i][1];
-                _time = pushLog[i][2];
-
-                if (_ip == ip) {
-                    if (time - _time < 10000) {
-                        canPush = false;
-                        var timeLeft = (10000 - (time - _time)) * 0.001;
-                        pushMessage = "Too close to last push. Next push unlocked in " + timeLeft + " seconds.";
-                    }
+            if (ip in pushLog) {
+                _time = pushLog[ip][1];
+                if (time - _time < 10000) {
+                    canPush = false;
+                    var timeLeft = (10000 - (time - _time)) * 0.001;
+                    pushMessage = "Too close to last push. Next push unlocked in " + timeLeft + " seconds.";
                 }
             }
         }
@@ -117,7 +112,7 @@ io.on('connection', function (socket) {
 
             io.emit('load level', GenerateClassMap());
 
-            pushLog.push([ip, toId, time]);
+            pushLog[ip] = [toId, time];
         }
 
         var messageType = 'info';
