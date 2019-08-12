@@ -2,7 +2,60 @@ var app = require('express')();
 var http = require('http').createServer(app);
 var io = require('socket.io')(http);
 
-var history = [];
+var chatLog = [];
+var pushLog = [];
+
+var legend = [
+    "open",
+    "blocked",
+    "orange-goal",
+    "green-goal",
+    "stone"
+]
+
+var map = [
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0,
+    0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0,
+    0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0,
+    0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0,
+    0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,
+    2, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 3,
+    2, 0, 1, 0, 1, 0, 1, 0, 4, 0, 1, 0, 1, 0, 1, 0, 3,
+    2, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 3,
+    0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0,
+    0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0,
+    0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0,
+    0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0,
+    0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+]
+
+var neighborOffsets = [
+    -17,
+    -1, 1,
+    17
+]
+
+function GenerateClassMap() {
+    var classMap = [];
+    for (var i = 0; i < map.length; i++) {
+        var _class = legend[map[i]];
+        for (var n = 0; n < neighborOffsets.length; n++) {
+            if (i + neighborOffsets[n] < 0 || i + neighborOffsets[n] > map.length - 1) {
+                continue;
+            }
+            if (map[i + neighborOffsets[n]] == 4 && map[i] == 0) {
+                _class += " free-neighbor";
+                break;
+            }
+        }
+        classMap.push(_class);
+    }
+    return classMap;
+}
 
 app.get('/', function (req, res) {
     res.sendFile(__dirname + '/client/index.html');
@@ -22,4 +75,55 @@ app.get('/jquery', function (req, res) {
 
 http.listen(8000, function () {
     console.log('Server running at http://localhost:8000');
+});
+
+io.on('connection', function (socket) {
+    var id = socket.id;
+    var ip = socket.request.connection.remoteAddress;
+    console.log("user connected - " + ip);
+    io.to(id).emit('load level', GenerateClassMap())
+
+    socket.on('push', function (toId) {
+        var time = Date.now();
+
+        var canPush = true;
+        var pushMessage = "Moved stone to #" + toId + " at " + time;
+        var classMap = GenerateClassMap();
+
+        if (!classMap[toId].includes('free-neighbor')) {
+            canPush = false;
+            pushMessage = "Invalid destination. Refresh page if issue persists.";
+        }
+        else {
+            for (var i = 0; i < pushLog.length; i++) {
+                _ip = pushLog[i][0];
+                _toId = pushLog[i][1];
+                _time = pushLog[i][2];
+
+                if (_ip == ip) {
+                    if (time - _time < 10000) {
+                        canPush = false;
+                        var timeLeft = (10000 - (time - _time)) * 0.001;
+                        pushMessage = "Too close to last push. Next push unlocked in " + timeLeft + " seconds.";
+                    }
+                }
+            }
+        }
+
+        if (canPush) {
+            var curStonePos = map.indexOf(4);
+            map[curStonePos] = 0;
+            map[toId] = 4;
+
+            io.emit('load level', GenerateClassMap());
+
+            pushLog.push([ip, toId, time]);
+        }
+
+        io.to(id).emit('push message', pushMessage);
+    });
+
+    socket.on('disconnect', function () {
+        console.log('user disconnected');
+    });
 });

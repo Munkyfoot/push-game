@@ -63,3 +63,13 @@ body{
     border: 2px solid rgb(200,200,200);
     background-color: rgb(96, 94, 94);
 }
+
+.free-neighbor{
+    cursor: pointer;
+    border: 2px solid white;
+    background-color: rgb(200,200,200);
+}
+
+.free-neighbor:hover{
+    background-color: rgb(232,232,232);
+}

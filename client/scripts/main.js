@@ -1,46 +1,19 @@
-/*
-Legend
-
-0 - Open
-1 - Blocked
-2 - Green Goal
-3 - Orange Goal
-4 - Dividing Line
-5 - Stone
-*/
-
-var legend = [
-    "open",
-    "blocked",
-    "orange-goal",
-    "green-goal",
-    "stone"
-]
-
-var map = [
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0,
-    0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0,
-    0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0,
-    0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0,
-    0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,
-    2, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 3,
-    2, 0, 1, 0, 1, 0, 1, 0, 4, 0, 1, 0, 1, 0, 1, 0, 3,
-    2, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 3,
-    0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0,
-    0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0,
-    0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0,
-    0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0,
-    0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-]
-
 $(function () {
-    for (var c = 0; c < map.length; c++) {
-        var _class = legend[map[c]];
-        var flexBasis = 100 / Math.sqrt(map.length);
-        $('#map').append("<div id='" + c + "' class='cell " + _class + "' style='flex-basis:calc(" + flexBasis + "% - 2px);'></div>");
-    }
+    var socket = io();
+    socket.on('load level', function (classMap) {
+        $(".cell").remove();
+        for (var c = 0; c < classMap.length; c++) {
+            var _class = classMap[c];
+            var flexBasis = 100 / Math.sqrt(classMap.length);
+            $('#map').append("<div id='" + c + "' class='cell " + _class + "' style='flex-basis:calc(" + flexBasis + "% - 2px);'></div>");
+        }
+    });
+
+    socket.on('push message', function (msg){
+        //alert(msg);
+    });
+
+    $('#map').on('click', '.free-neighbor', function(){
+        socket.emit('push', $(this).attr('id'));
+    });
 });
