@@ -5,7 +5,7 @@ $(function () {
         for (var c = 0; c < classMap.length; c++) {
             var _class = classMap[c];
             var flexBasis = 100 / Math.sqrt(classMap.length);
-            $('#map').append("<div id='" + c + "' class='cell " + _class + "' style='flex-basis:calc(" + flexBasis + "% - 2px);'></div>");
+            $('#map').append("<div id='" + c + "' class='cell " + _class + "' style='flex-basis:calc(" + flexBasis + "% - 4px);'></div>");
         }
     });
 
