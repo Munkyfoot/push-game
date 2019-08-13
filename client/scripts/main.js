@@ -10,7 +10,7 @@ $(function () {
     });
 
     socket.on('push message', function (msg, type) {
-        $('#chat_output').prepend("<div class='message'><span class='name " + type + "'>!</span>" + msg + "</div>");
+        $('#chat_output').prepend("<div class='message'><span class='name " + type + "'></span>" + msg + "</div>");
     });
 
     $('#map').on('click', '.free-neighbor', function () {

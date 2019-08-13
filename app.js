@@ -115,7 +115,7 @@ io.on('connection', function (socket) {
             pushLog[ip] = [toId, time];
         }
 
-        var messageType = 'info';
+        var messageType = 'success';
         if(!canPush){
             messageType = 'warning';
         }

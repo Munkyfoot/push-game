@@ -137,6 +137,10 @@ input{
     background-color: rgb(88, 100, 232);
 }
 
+.success{
+    background-color: rgb(128, 255, 128);
+}
+
 .warning{
     background-color: rgb(255, 96, 64);
 }
