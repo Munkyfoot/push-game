@@ -13,7 +13,7 @@ var legend = [
     "stone"
 ]
 
-var map = [
+const mapBase = [
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0,
     0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0,
@@ -32,6 +32,8 @@ var map = [
     0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 ]
+
+var map = [...mapBase];
 
 var neighborOffsets = [
     -17,
@@ -113,6 +115,7 @@ io.on('connection', function (socket) {
             }
         }
 
+        var destType = map[toId];
         if (canPush) {
             var curStonePos = map.indexOf(4);
             map[curStonePos] = 0;
@@ -128,6 +131,14 @@ io.on('connection', function (socket) {
             messageType = 'warning';
         }
         io.to(id).emit('push message', pushMessage, messageType);
+
+        if(canPush && (destType == 2 || destType == 3)){
+            pushLog = {};
+            var winner = ['Orange', 'Green'][destType - 2];
+            io.emit('push message', winner + " team wins! New match starting now.", 'info');
+            map = [...mapBase];
+            io.emit('load level', GenerateClassMap());
+        }
     });
 
     socket.on('disconnect', function () {
