@@ -87,7 +87,7 @@ io.on('connection', function (socket) {
         var time = Date.now();
 
         var canPush = true;
-        var pushMessage = "Moved stone to #" + toId + " at " + time;
+        var pushMessage = "Moved stone to cell #" + toId + ". Please wait 10 seconds for your next push.";
         var classMap = GenerateClassMap();
 
         if (!classMap[toId].includes('free-neighbor')) {

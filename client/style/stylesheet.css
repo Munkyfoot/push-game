@@ -48,13 +48,18 @@ input{
 }
 
 .cell{
+    display: flex;
+    justify-content: center;
+    align-items: center;
     margin: 2px;
+    padding: 0;
     border-radius: 5px;
     flex-shrink: 0;
-    flex-grow: 1;
+    flex-grow: 0;
     font-style: monospace;
     font-size: small;
-    color:black;
+    color:white;
+    text-shadow: 0 0 2px black;
 }
 
 .open{
@@ -81,12 +86,12 @@ input{
 
 .free-neighbor{
     cursor: pointer;
-    border: 2px solid white;
-    background-color: rgb(200,200,200);
+    border: 2px solid rgb(232,232,232);
 }
 
 .free-neighbor:hover{
-    background-color: rgb(232,232,232);
+    border-radius: 50%;
+    border: 2px solid white;
 }
 
 #chat{
