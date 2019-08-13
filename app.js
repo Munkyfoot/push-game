@@ -79,8 +79,10 @@ http.listen(8000, function () {
 
 io.on('connection', function (socket) {
     var id = socket.id;
-    var ip = socket.request.connection.remoteAddress;
-    console.log("user connected - " + ip);
+    var ip = socket.conn.remoteAddress;
+    var team = parseInt(ip.replace(/\D/g,'')) % 2;
+    console.log("user connected - " + ip + " on team " + team);
+    io.to(id).emit('set team', team);
     io.to(id).emit('load level', GenerateClassMap())
 
     socket.on('push', function (toId) {

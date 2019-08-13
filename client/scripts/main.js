@@ -9,6 +9,15 @@ $(function () {
         }
     });
 
+    socket.on('set team', function(team){
+        if(team == 0){
+            $("#chat_name").addClass("orange");
+        }
+        else{
+            $("#chat_name").addClass("green");
+        }
+    });
+
     socket.on('push message', function (msg, type) {
         $('#chat_output').prepend("<div class='message'><span class='name " + type + "'></span>" + msg + "</div>");
     });

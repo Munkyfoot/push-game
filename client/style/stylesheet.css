@@ -101,10 +101,18 @@ input{
 }
 
 #chat_output{
-    flex-basis: calc(100% - 40px);
+    flex-basis: calc(100% - 30px);
     background-color: rgb(32,32,32);
     overflow: hidden;
     padding: 5px;
+}
+
+#chat_name{
+    width: 25%;
+    border-top: 1px solid gray;
+    border-right: 1px solid gray;
+    color: rgb(12,12,12);
+    font-weight: bold;
 }
 
 #chat_input{
