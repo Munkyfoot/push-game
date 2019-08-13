@@ -47,7 +47,7 @@ function GenerateClassMap() {
             if (i + neighborOffsets[n] < 0 || i + neighborOffsets[n] > map.length - 1) {
                 continue;
             }
-            if (map[i + neighborOffsets[n]] == 4 && map[i] == 0) {
+            if (map[i + neighborOffsets[n]] == 4 && map[i] != 1) {
                 _class += " free-neighbor";
                 break;
             }
@@ -83,7 +83,8 @@ io.on('connection', function (socket) {
     var team = parseInt(ip.replace(/\D/g,'')) % 2;
     console.log("user connected - " + ip + " on team " + team);
     io.to(id).emit('set team', team);
-    io.to(id).emit('load level', GenerateClassMap())
+    io.to(id).emit('load level', GenerateClassMap());
+    io.to(id).emit('push message', "Welcome to 'Push', a game of patience, comeradery, and determination. The goal is to push the 'stone' into your team's goal. You can see your team color at the bottom of the screen where you can set your name. You can only push the stone once every 10 seconds so you'll have to work with your team mates to secure a victory.", 'info');
 
     socket.on('chat message', function(name, msg){
         var teamClass = ['orange', 'green'][team];
