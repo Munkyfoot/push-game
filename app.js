@@ -99,7 +99,7 @@ io.on('connection', function (socket) {
                 _time = pushLog[ip][1];
                 if (time - _time < 10000) {
                     canPush = false;
-                    var timeLeft = (10000 - (time - _time)) * 0.001;
+                    var timeLeft = Math.ceil((10000 - (time - _time)) * 0.001);
                     pushMessage = "Too close to last push. Next push unlocked in " + timeLeft + " seconds.";
                 }
             }
