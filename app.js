@@ -85,6 +85,11 @@ io.on('connection', function (socket) {
     io.to(id).emit('set team', team);
     io.to(id).emit('load level', GenerateClassMap())
 
+    socket.on('chat message', function(name, msg){
+        var teamClass = ['orange', 'green'][team];
+        io.emit('chat message', teamClass, name, msg);
+    });
+
     socket.on('push', function (toId) {
         var time = Date.now();
 

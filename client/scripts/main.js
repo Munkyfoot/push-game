@@ -9,11 +9,11 @@ $(function () {
         }
     });
 
-    socket.on('set team', function(team){
-        if(team == 0){
+    socket.on('set team', function (team) {
+        if (team == 0) {
             $("#chat_name").addClass("orange");
         }
-        else{
+        else {
             $("#chat_name").addClass("green");
         }
     });
@@ -24,5 +24,17 @@ $(function () {
 
     $('#map').on('click', '.free-neighbor', function () {
         socket.emit('push', $(this).attr('id'));
+    });
+
+    $("form").submit(function (e) {
+        e.preventDefault();
+        var name = $("#chat_name").val();
+        var msg = $("#chat_input").val();
+        socket.emit("chat message", name, msg);
+        $("#chat_input").val("");
+    });
+
+    socket.on('chat message', function (team, name, msg) {
+        $('#chat_output').prepend("<div class='message'><span class='name " + team + "'>" + name + "</span>" + msg + "</div>");
     });
 });
