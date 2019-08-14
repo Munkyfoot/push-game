@@ -138,6 +138,7 @@ io.on('connection', function (socket) {
             map[toId] = 4;
 
             io.emit('load level', GenerateClassMap());
+            socket.broadcast.emit('push message', "Stone moved to cell #" + toId + ".", 'info');
 
             pushLog[ip] = [toId, time];
         }
