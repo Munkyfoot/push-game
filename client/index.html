@@ -16,12 +16,33 @@
     <div id="map">
 
     </div>
+    <div id="hud">
+        <div class="readout" id="ui_orange">
+            <small>ORANGE TEAM</small>
+            <div>
+                0
+            </div>
+        </div>
+        <div class="readout" id="ui_timer">
+            <small>PUSH</small>
+            <div>
+                GO
+            </div>
+        </div>
+        <div class="readout" id="ui_green">
+            <small>GREEN TEAM</small>
+            <div>
+                0
+            </div>
+        </div>
+    </div>
     <div id="chat">
         <div id="chat_output">
         </div>
         <form>
             <input id="chat_name" maxlength="11" placeholder="Name...">
-            <input id="chat_input" maxlength="50" placeholder="Message..."><input type="submit" id="chat_send" value="Send">
+            <input id="chat_input" maxlength="50" placeholder="Message..."><input type="submit" id="chat_send"
+                value="Send">
         </form>
     </div>
     <script src="/socket.io/socket.io.js"></script>

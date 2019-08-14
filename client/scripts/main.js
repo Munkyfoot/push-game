@@ -19,6 +19,36 @@ $(function () {
     });
 
     socket.on('push message', function (msg, type) {
+        if (type == 'success') {
+            $("#ui_timer > small").text("WAIT");
+            $("#ui_timer > div").text(10);
+
+            var neighbors = [];
+            $('.free-neighbor').each(function(){
+                neighbors.push($(this).attr('id'));
+                $(this).removeClass('free-neighbor');
+            });
+
+            var timer = 10;
+            var tick = setInterval(function () {
+                timer -= 1;
+                if (timer > 0) {
+                    $("#ui_timer > div").text(timer);
+                }
+                else {
+                    $("#ui_timer > small").text("PUSH");
+                    $("#ui_timer > div").text('GO');
+
+                    for(var i = 0; i < neighbors.length; i++){
+                        var n = neighbors[i];
+                        $("#"+n).addClass("free-neighbor");
+                    }
+
+                    clearInterval(tick);
+                }
+            }, 1000);
+        }
+
         $('#chat_output').prepend("<div class='message'><span class='name " + type + "'></span>" + msg + "</div>");
     });
 
