@@ -7,6 +7,9 @@ var pushLog = {};
 
 var inGame = true;
 
+var orangeScore = 0;
+var greenScore = 0;
+
 var legend = [
     "open",
     "blocked",
@@ -93,6 +96,8 @@ io.on('connection', function (socket) {
         io.to(id).emit('push message', "This game session recently ended. A new match will be starting very soon.", "info");
     }
 
+    io.emit('sync score', orangeScore, greenScore);
+
     socket.on('chat message', function (name, msg) {
         var teamClass = ['orange', 'green'][team];
         io.emit('chat message', teamClass, name, msg);
@@ -145,13 +150,21 @@ io.on('connection', function (socket) {
         if (canPush && (destType == 2 || destType == 3)) {
             pushLog = {};
             var winner = ['Orange', 'Green'][destType - 2];
+
+            if(destType == 2){
+                orangeScore += 1;
+            }
+            else{
+                greenScore += 1;
+            }
+            io.emit('sync score', orangeScore, greenScore);
             io.emit('push message', winner + " team wins! New match starting soon.", winner.toLowerCase());
             inGame = false;
             setTimeout(function () {
                 map = [...mapBase];
                 io.emit('load level', GenerateClassMap());
                 inGame = true;
-            }, 5000);
+            }, 10000);
         }
     });
 

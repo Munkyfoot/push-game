@@ -18,6 +18,11 @@ $(function () {
         }
     });
 
+    socket.on('sync score', function(oscore, gscore){
+        $("#ui_orange > div").text(oscore);
+        $("#ui_green > div").text(gscore);
+    })
+
     socket.on('push message', function (msg, type) {
         if (type == 'success') {
             $("#ui_timer > small").text("WAIT");
