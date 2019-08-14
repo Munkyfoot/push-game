@@ -5,6 +5,8 @@ var io = require('socket.io')(http);
 var chatLog = [];
 var pushLog = {};
 
+var inGame = true;
+
 var legend = [
     "open",
     "blocked",
@@ -82,18 +84,26 @@ http.listen(8000, function () {
 io.on('connection', function (socket) {
     var id = socket.id;
     var ip = socket.conn.remoteAddress;
-    var team = parseInt(ip.replace(/\D/g,'')) % 2;
+    var team = parseInt(ip.replace(/\D/g, '')) % 2;
     console.log("user connected - " + ip + " on team " + team);
     io.to(id).emit('set team', team);
     io.to(id).emit('load level', GenerateClassMap());
     io.to(id).emit('push message', "Welcome to 'Push', a game of patience, comeradery, and determination. The goal is to push the 'stone' into your team's goal. You can see your team color at the bottom of the screen where you can set your name. You can only push the stone once every 10 seconds so you'll have to work with your team mates to secure a victory.", 'info');
+    if(!inGame){
+        io.to(id).emit('push message', "This game session recently ended. A new match will be starting very soon.", "info");
+    }
 
-    socket.on('chat message', function(name, msg){
+    socket.on('chat message', function (name, msg) {
         var teamClass = ['orange', 'green'][team];
         io.emit('chat message', teamClass, name, msg);
     });
 
     socket.on('push', function (toId) {
+        if(!inGame){
+            io.to(id).emit('push message', "This game session recently ended. A new match will be starting very soon.", "warning");
+            return;
+        }
+
         var time = Date.now();
 
         var canPush = true;
@@ -127,17 +137,21 @@ io.on('connection', function (socket) {
         }
 
         var messageType = 'success';
-        if(!canPush){
+        if (!canPush) {
             messageType = 'warning';
         }
         io.to(id).emit('push message', pushMessage, messageType);
 
-        if(canPush && (destType == 2 || destType == 3)){
+        if (canPush && (destType == 2 || destType == 3)) {
             pushLog = {};
             var winner = ['Orange', 'Green'][destType - 2];
-            io.emit('push message', winner + " team wins! New match starting now.", 'info');
-            map = [...mapBase];
-            io.emit('load level', GenerateClassMap());
+            io.emit('push message', winner + " team wins! New match starting soon.", winner.toLowerCase());
+            inGame = false;
+            setTimeout(function () {
+                map = [...mapBase];
+                io.emit('load level', GenerateClassMap());
+                inGame = true;
+            }, 5000);
         }
     });
 
