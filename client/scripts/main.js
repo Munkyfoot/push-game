@@ -1,9 +1,17 @@
 $(function () {
+    var waiting = false;
+    var neighbors = [];
     var socket = io();
     socket.on('load level', function (classMap) {
+        neighbors = [];
         $(".cell").remove();
         for (var c = 0; c < classMap.length; c++) {
             var _class = classMap[c];
+            if (waiting && _class.includes('free-neighbor')) {
+                _class = 'open';
+                neighbors.push(c);
+            }
+
             var flexBasis = 100 / Math.sqrt(classMap.length);
             $('#map').append("<div id='" + c + "' title='" + c + "' class='cell " + _class + "' style='flex-basis:calc(" + flexBasis + "% - 4px);'></div>");
         }
@@ -18,18 +26,21 @@ $(function () {
         }
     });
 
-    socket.on('sync score', function(oscore, gscore){
+    socket.on('sync score', function (oscore, gscore) {
         $("#ui_orange > div").text(oscore);
         $("#ui_green > div").text(gscore);
     })
 
     socket.on('push message', function (msg, type) {
         if (type == 'success') {
+            waiting = true;
+
             $("#ui_timer > small").text("WAIT");
             $("#ui_timer > div").text(10);
 
-            var neighbors = [];
-            $('.free-neighbor').each(function(){
+            neighbors = [];
+
+            $('.free-neighbor').each(function () {
                 neighbors.push($(this).attr('id'));
                 $(this).removeClass('free-neighbor');
             });
@@ -44,11 +55,12 @@ $(function () {
                     $("#ui_timer > small").text("PUSH");
                     $("#ui_timer > div").text('GO');
 
-                    for(var i = 0; i < neighbors.length; i++){
+                    for (var i = 0; i < neighbors.length; i++) {
                         var n = neighbors[i];
-                        $("#"+n).addClass("free-neighbor");
+                        $("#" + n).addClass("free-neighbor");
                     }
 
+                    waiting = false;
                     clearInterval(tick);
                 }
             }, 1000);

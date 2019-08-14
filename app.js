@@ -86,7 +86,8 @@ http.listen(8000, function () {
 
 io.on('connection', function (socket) {
     var id = socket.id;
-    var ip = socket.conn.remoteAddress;
+    //var ip = socket.conn.remoteAddress;
+    var ip = id;
     var team = parseInt(ip.replace(/\D/g, '')) % 2;
     console.log("user connected - " + ip + " on team " + team);
     io.to(id).emit('set team', team);
