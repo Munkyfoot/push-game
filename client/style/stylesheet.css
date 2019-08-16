@@ -132,10 +132,21 @@ input{
 }
 
 #chat_output{
+    position: relative;
     flex-basis: calc(100% - 30px);
     background-color: rgb(32,32,32);
     overflow: hidden;
     padding: 5px;
+}
+
+#chat_output::after{
+    position: absolute;
+    height: 25%;
+    width: 100%;
+    bottom: 0;
+    left: 0;
+    background: linear-gradient(to top, rgb(24,24,24), transparent);
+    content: "";
 }
 
 #chat_name{
