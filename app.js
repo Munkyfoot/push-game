@@ -110,7 +110,10 @@ io.on('connection', function (socket) {
         io.to(id).emit('chat message', log[0], log[1], log[2]);
     }
     io.to(id).emit('push message', "Welcome to 'Push', a game of patience, comeradery, and determination. The goal is to push the 'stone' into your team's goal. You can see your team color at the bottom of the screen where you can set your name. Each player can only push the stone once every 10 seconds so you'll have to work with your team mates to secure a victory.", 'info');
-    if(!inGame){
+    if(inGame){
+        pushLog[ip] = [map.indexOf(4), Date.now()];
+    }
+    else{
         io.to(id).emit('push message', "This game session recently ended. A new match will be starting very soon.", "info");
     }
 

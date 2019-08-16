@@ -1,7 +1,9 @@
 $(function () {
     var waiting = false;
+    var hasLoaded = false;
     var neighbors = [];
     var socket = io();
+
     socket.on('load level', function (classMap) {
         neighbors = [];
         $(".cell").remove();
@@ -14,6 +16,11 @@ $(function () {
 
             var flexBasis = 100 / Math.sqrt(classMap.length);
             $('#map').append("<div id='" + c + "' title='" + c + "' class='cell " + _class + "' style='flex-basis:calc(" + flexBasis + "% - 4px);'></div>");
+        }
+
+        if (!hasLoaded) {
+            Wait();
+            hasLoaded = true;
         }
     });
 
@@ -33,37 +40,7 @@ $(function () {
 
     socket.on('push message', function (msg, type) {
         if (type == 'success') {
-            waiting = true;
-
-            $("#ui_timer > small").text("WAIT");
-            $("#ui_timer > div").text(10);
-
-            neighbors = [];
-
-            $('.free-neighbor').each(function () {
-                neighbors.push($(this).attr('id'));
-                $(this).removeClass('free-neighbor');
-            });
-
-            var timer = 10;
-            var tick = setInterval(function () {
-                timer -= 1;
-                if (timer > 0) {
-                    $("#ui_timer > div").text(timer);
-                }
-                else {
-                    $("#ui_timer > small").text("PUSH");
-                    $("#ui_timer > div").text('GO');
-
-                    for (var i = 0; i < neighbors.length; i++) {
-                        var n = neighbors[i];
-                        $("#" + n).addClass("free-neighbor");
-                    }
-
-                    waiting = false;
-                    clearInterval(tick);
-                }
-            }, 1000);
+            Wait();
         }
 
         $('#chat_output').prepend("<div class='message'><span class='name " + type + "'></span>" + msg + "</div>");
@@ -86,4 +63,38 @@ $(function () {
     socket.on('chat message', function (team, name, msg) {
         $('#chat_output').prepend("<div class='message'><span class='name " + team + "'>" + name + "</span>" + msg + "</div>");
     });
+
+    function Wait() {
+        waiting = true;
+
+        $("#ui_timer > small").text("WAIT");
+        $("#ui_timer > div").text(10);
+
+        neighbors = [];
+
+        $('.free-neighbor').each(function () {
+            neighbors.push($(this).attr('id'));
+            $(this).removeClass('free-neighbor');
+        });
+
+        var timer = 10;
+        var tick = setInterval(function () {
+            timer -= 1;
+            if (timer > 0) {
+                $("#ui_timer > div").text(timer);
+            }
+            else {
+                $("#ui_timer > small").text("PUSH");
+                $("#ui_timer > div").text('GO');
+
+                for (var i = 0; i < neighbors.length; i++) {
+                    var n = neighbors[i];
+                    $("#" + n).addClass("free-neighbor");
+                }
+
+                waiting = false;
+                clearInterval(tick);
+            }
+        }, 1000);
+    }
 });
