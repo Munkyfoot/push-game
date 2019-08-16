@@ -77,8 +77,10 @@ $(function () {
         e.preventDefault();
         var name = $("#chat_name").val();
         var msg = $("#chat_input").val();
-        socket.emit("chat message", name, msg);
-        $("#chat_input").val("");
+        if (msg.length > 0) {
+            socket.emit("chat message", name, msg);
+            $("#chat_input").val("");
+        }
     });
 
     socket.on('chat message', function (team, name, msg) {
