@@ -102,17 +102,16 @@ io.on('connection', function (socket) {
     console.log("user connected - " + ip + " on team " + team);
     io.to(id).emit('set team', team);
     io.to(id).emit('load level', GenerateClassMap());
-    io.to(id).emit('push message', "Welcome to 'Push', a game of patience, comeradery, and determination. The goal is to push the 'stone' into your team's goal. You can see your team color at the bottom of the screen where you can set your name. Each player can only push the stone once every 10 seconds so you'll have to work with your team mates to secure a victory.", 'info');
-    if(!inGame){
-        io.to(id).emit('push message', "This game session recently ended. A new match will be starting very soon.", "info");
-    }
-
     io.emit('sync score', orangeScore, greenScore);
 
     var logLength = Math.min(chatLog.length, 8);
     for(var i = 0; i < logLength; i++){
         var log = chatLog[chatLog.length - logLength + i];
         io.to(id).emit('chat message', log[0], log[1], log[2]);
+    }
+    io.to(id).emit('push message', "Welcome to 'Push', a game of patience, comeradery, and determination. The goal is to push the 'stone' into your team's goal. You can see your team color at the bottom of the screen where you can set your name. Each player can only push the stone once every 10 seconds so you'll have to work with your team mates to secure a victory.", 'info');
+    if(!inGame){
+        io.to(id).emit('push message', "This game session recently ended. A new match will be starting very soon.", "info");
     }
 
     socket.on('chat message', function (name, msg) {
