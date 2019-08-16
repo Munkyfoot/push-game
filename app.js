@@ -54,6 +54,12 @@ function GenerateClassMap() {
             if (i + neighborOffsets[n] < 0 || i + neighborOffsets[n] > map.length - 1) {
                 continue;
             }
+            if(i % 17 == 0 && neighborOffsets[n] == -1){
+                continue;
+            }
+            if(i % 17 == 16 && neighborOffsets[n] == 1){
+                continue;
+            }
             if (map[i + neighborOffsets[n]] == 4 && map[i] != 1) {
                 _class += " free-neighbor";
                 break;
