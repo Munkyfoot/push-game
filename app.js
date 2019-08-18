@@ -91,15 +91,20 @@ http.listen(8000, function () {
 });
 
 io.on('connection', function (socket) {
-    var id = socket.id;
-    //var ip = socket.conn.remoteAddress;
-    var ip = '';
+    var id = socket.id;    
+    var idHash = '';
     for(var i = 0; i < id.length; i++){
-        ip += '' + (id.charCodeAt(i) % 9);
+        idHash += '' + (id.charCodeAt(i) % 9);
     }
 
-    var team = parseInt(ip[0]) % 2;
-    console.log("user connected - " + ip + " on team " + team);
+    var ip = socket.conn.remoteAddress;
+    var ipHash = '';
+    for(var i = 0; i < ip.length; i++){
+        ipHash += '' + (ip.charCodeAt(i) % 9);
+    }
+
+    var team = parseInt(ipHash[0]) % 2;
+    console.log("user connected - " + idHash + " on team " + team);
     io.to(id).emit('set team', team);
     io.to(id).emit('load level', GenerateClassMap());
     io.emit('sync score', orangeScore, greenScore);
@@ -111,7 +116,7 @@ io.on('connection', function (socket) {
     }
     io.to(id).emit('push message', "Welcome to 'Push', a game of patience, comeradery, and determination. The goal is to push the 'stone' into your team's goal. You can see your team color at the bottom of the screen where you can set your name. Each player can only push the stone once every 10 seconds so you'll have to work with your team mates to secure a victory.", 'info');
     if(inGame){
-        pushLog[ip] = [map.indexOf(4), Date.now()];
+        pushLog[idHash] = [map.indexOf(4), Date.now()];
     }
     else{
         io.to(id).emit('push message', "This game session recently ended. A new match will be starting very soon.", "info");
@@ -140,8 +145,8 @@ io.on('connection', function (socket) {
             pushMessage = "Invalid destination. Refresh page if issue persists.";
         }
         else {
-            if (ip in pushLog) {
-                _time = pushLog[ip][1];
+            if (idHash in pushLog) {
+                _time = pushLog[idHash][1];
                 if (time - _time < 10000) {
                     canPush = false;
                     var timeLeft = Math.ceil((10000 - (time - _time)) * 0.001);
@@ -159,7 +164,7 @@ io.on('connection', function (socket) {
             io.emit('load level', GenerateClassMap());
             socket.broadcast.emit('push message', "Stone moved to cell #" + toId + ".", 'info');
 
-            pushLog[ip] = [toId, time];
+            pushLog[idHash] = [toId, time];
         }
 
         var messageType = 'success';
